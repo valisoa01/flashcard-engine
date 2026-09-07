@@ -6,9 +6,15 @@ Projet : FlashCard Engine --- Cartes mémoires pour révision (Spaced
 Repetition)
 Groupe : 34
 Chef de groupe : Rafanomezantsoa Tolotriniaina Valisoa
-Date limite : 16 septembre 2026
+Période du projet : 2 septembre --- 16 septembre 2026
+Focus technique : Algorithme Spaced Repetition en Dart pur, base de
+données locale, import/export JSON.
+Bonus : Synchronisation optionnelle Firestore.
 État actuel : Projet Flutter initialisé, dépôt GitHub créé, branche
 main protégée, branche develop créée.
+Composition de l'équipe : équipe de 5 personnes listées. Seuls 2 sont
+actifs (Valisoa et Achille). Les autres membres n'ont pas participé pour
+l'instant.
 
 1. Objectif du document
 
@@ -242,6 +248,23 @@ git commit -m "fix: correct next review calculation"
 
 5. RÉPARTITION DES RESPONSABILITÉS (point important)
 
+L'équipe était composée de 6 personnes au départ (le chef de groupe
+plus 5 coéquipiers listés sur le projet). À ce jour seuls 2 membres sont
+actifs et contribuent au projet :
+
+Valisoa (Chef de groupe) : Chef de groupe.
+Achille : Développeur Spaced Repetition.
+
+Les autres membres inscrits (benedicte, sawadogoahmedelamine,
+ouedmarina, abel) n'ont pas encore participé au développement. S'ils
+ rejoignent le
+projet plus tard, ils seront intégrés progressivement sur les tâches
+restantes (voir section 8).
+
+Conformément à la règle 16 : le projet avance avec les membres
+actuellement disponibles. On n'attend pas les membres absents pour
+commencer.
+
 La répartition suit le principe suivant :
 
 Un module = une personne responsable.
@@ -249,18 +272,19 @@ Un module = une personne responsable.
 Chaque membre travaille sur SA branche et ne modifie pas le travail des
 autres.
 
-Les deux membres actuels se partagent ainsi les modules :
+Les deux membres actifs se partagent ainsi les modules :
 
 Valisoa (Chef de groupe) : Architecture, Modèles, Base de données,
-                              Interface (UI), intégration.
+                              Interface (UI), Intégration, JSON,
+                              Documentation.
 
 Achille : Spaced Repetition (algorithme pur + tests).
 
 Pour éviter toute confusion :
 
 les tâches à ORIENTATION TECHNIQUE et VISUELLE (modèles, base de
-données, écrans) reviennent à Valisoa en attendant l'arrivée de
-nouveaux membres ;
+données, écrans, JSON) reviennent à Valisoa en attendant que d'autres
+membres rejoignent le groupe ;
 
 les tâches de LOGIQUE PURE (algorithme Spaced Repetition) reviennent
 à Achille.
@@ -500,16 +524,20 @@ Merge dans develop
 
 Tâches à attribuer aux nouveaux membres (disponibles)
 
+Important : tant qu'aucun nouveau membre n'a rejoint, ces tâches sont
+reprises par Valisoa (ou réparties avec Achille si l'une concerne le
+Spaced Repetition).
+
 ┌──────┬──────────────────────────┬──────────────────────────┐
 │ ID   │ Tâche                    │ Branche suggérée         │
 ├──────┼──────────────────────────┼──────────────────────────┤
-│ T-18 │ Écran Home (si non fait) │ feature/home-ui          │
-│ T-19 │ Écran Deck               │ feature/deck-ui          │
-│ T-20 │ Import JSON              │ feature/json-import-export│
-│ T-21 │ Export JSON              │ feature/json-import-export│
-│ T-22 │ Tests Database           │ feature/tests            │
-│ T-23 │ Tests JSON               │ feature/tests            │
-│ T-24 │ QA / correction bugs     │ feature/qa               │
+│ T-B1 │ Écran Study (UI)         │ feature/study-ui         │
+│ T-B2 │ Import JSON              │ feature/json-import-export│
+│ T-B3 │ Export JSON              │ feature/json-import-export│
+│ T-B4 │ Tests Database           │ feature/tests            │
+│ T-B5 │ Tests JSON               │ feature/tests            │
+│ T-B6 │ QA / correction bugs     │ feature/qa               │
+│ T-B7 │ Bonus Firestore          │ feature/firestore-sync   │
 └──────┴──────────────────────────┴──────────────────────────┘
 
 ════════════════════════════════════════════════════════════════════
@@ -542,8 +570,8 @@ Légende des statuts :
 │ T-06 │ Repository Deck +        │ Database      │ Valisoa       │ Terminé      │ PR #6                │
 │      │ Repository Flashcard     │               │               │              │                      │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-07 │ Écran Home               │ UI            │ Valisoa       │ En review    │ branch feature/      │
-│      │                          │               │               │              │ home-ui              │
+│ T-07 │ Écran Home               │ UI            │ Valisoa       │ Terminé      │ PR #7                │
+│      │                          │               │               │              │                      │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
 │ T-08 │ Écran Deck + flashcards  │ UI            │ Valisoa       │ À faire      │ —                    │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
@@ -569,18 +597,6 @@ Légende des statuts :
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
 │ T-17 │ Tests unitaires SR       │ Tests         │ Achille       │ En cours /   │ —                    │
 │      │                          │               │               │ À faire      │                      │
-├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-18 │ Écran Deck + flashcards  │ UI            │ À attribuer   │ À faire      │ —                    │
-├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-19 │ Import JSON              │ JSON          │ À attribuer   │ À faire      │ —                    │
-├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-20 │ Export JSON              │ JSON          │ À attribuer   │ À faire      │ —                    │
-├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-21 │ Tests Database           │ Tests         │ À attribuer   │ À faire      │ —                    │
-├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-22 │ Tests JSON               │ Tests         │ À attribuer   │ À faire      │ —                    │
-├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-23 │ QA / Q bonus Firestore   │ QA / Bonus    │ À attribuer   │ À faire      │ —                    │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
 │ T-24 │ Démo / présentation      │ Demo          │ Toute l'équipe│ À faire      │ —                    │
 └──────┴──────────────────────────┴───────────────┴───────────────┴──────────────┴──────────────────────┘
@@ -751,7 +767,7 @@ Architecture               ✅
 Modèles                    ✅
 Database locale (Hive)     ✅
 Repositories               ✅
-Écran Home                 🟡 (en review)
+Écran Home                 ✅ Terminé
 Spaced Repetition          🟡 (en cours par Achille)
 Écran Deck                 ⏳
 Écran Study                ⏳
@@ -766,7 +782,7 @@ Prochaine étape recommandée :
      ↓
 Écran Study (Valisoa)
      ↓
-Import/Export JSON (Valisoa / à attribuer)
+Import/Export JSON (Valisoa)
      ↓
 Intégration complète
      ↓
