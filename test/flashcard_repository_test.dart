@@ -4,16 +4,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 
 import 'package:flashcard/models/flashcard.dart';
-import 'package:flashcard/repositories/flashcard_repository.dart';
+import 'package:flashcard/repositories/hive_flashcard_repository.dart';
 
 void main() {
   group('FlashcardRepository', () {
-    late FlashcardRepository repository;
+    late HiveFlashcardRepository repository;
 
     setUp(() async {
       final tempDir = await Directory.systemTemp.createTemp('hive_test');
       Hive.init(tempDir.path);
-      repository = FlashcardRepository();
+      repository = HiveFlashcardRepository();
     });
 
     tearDown(() async {

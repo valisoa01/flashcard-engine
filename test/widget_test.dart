@@ -1,30 +1,59 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flashcard/app.dart';
+import 'package:flashcard/models/deck.dart';
+
+import 'fakes/fake_deck_repository.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const FlashcardApp());
+  late FakeDeckRepository repository;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUp(() {
+    repository = FakeDeckRepository();
+  });
 
-    // Tap the '+' icon and trigger a frame.
+  testWidgets('Home screen shows empty state', (WidgetTester tester) async {
+    await tester.pumpWidget(FlashcardApp(deckRepository: repository));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Mes decks'), findsOneWidget);
+    expect(find.text('Aucun deck. Créez-en un !'), findsOneWidget);
+  });
+
+  testWidgets('Home screen lists decks', (WidgetTester tester) async {
+    final now = DateTime(2026, 1, 1);
+    await repository.save(
+      Deck(
+        id: 'd1',
+        title: 'Français',
+        description: 'Vocabulaire',
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+
+    await tester.pumpWidget(FlashcardApp(deckRepository: repository));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Français'), findsOneWidget);
+    expect(find.text('Vocabulaire'), findsOneWidget);
+  });
+
+  testWidgets('Creates a deck via dialog', (WidgetTester tester) async {
+    await tester.pumpWidget(FlashcardApp(deckRepository: repository));
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.add), findsOneWidget);
     await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await tester.enterText(find.byType(TextFormField).at(0), 'Anglais');
+    await tester.enterText(find.byType(TextFormField).at(1), 'Verbes');
+    await tester.tap(find.text('Créer'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Anglais'), findsOneWidget);
+    expect(find.text('Verbes'), findsOneWidget);
   });
 }
