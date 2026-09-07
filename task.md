@@ -238,24 +238,59 @@ git commit -m "feat: add local database repository"
 git commit -m "test: add spaced repetition tests"
 git commit -m "fix: correct next review calculation"
 
-5. Répartition actuelle de l'équipe
+════════════════════════════════════════════════════════════════════
 
-À la date de rédaction de ce document, deux membres sont disponibles
-pour commencer le projet.
+5. RÉPARTITION DES RESPONSABILITÉS (point important)
 
-👑 Valisoa --- Chef de Groupe
+La répartition suit le principe suivant :
+
+Un module = une personne responsable.
+
+Chaque membre travaille sur SA branche et ne modifie pas le travail des
+autres.
+
+Les deux membres actuels se partagent ainsi les modules :
+
+Valisoa (Chef de groupe) : Architecture, Modèles, Base de données,
+                              Interface (UI), intégration.
+
+Achille : Spaced Repetition (algorithme pur + tests).
+
+Pour éviter toute confusion :
+
+les tâches à ORIENTATION TECHNIQUE et VISUELLE (modèles, base de
+données, écrans) reviennent à Valisoa en attendant l'arrivée de
+nouveaux membres ;
+
+les tâches de LOGIQUE PURE (algorithme Spaced Repetition) reviennent
+à Achille.
+
+Important : le développement se fait EN PARALLÈLE. Achille peut
+commencer l'algorithme sans attendre Valisoa, et inversement, car les
+deux modules sont indépendants.
+
+════════════════════════════════════════════════════════════════════
+
+6. 👑 Valisoa --- Chef de Groupe
 
 Responsabilité principale
 
-Architecture, coordination et intégration.
+Architecture, coordination, base de données, modèles, interface et
+intégration.
 
-Tâches initiales
+Tâches transverses
 
 mettre en place la structure du projet ;
 
 définir l'architecture ;
 
 définir les modèles de données ;
+
+choisir et configurer la base de données locale ;
+
+développer les écrans (UI) ;
+
+implémenter l'import/export JSON ;
 
 coordonner les branches ;
 
@@ -267,36 +302,76 @@ intégrer les fonctionnalités dans develop ;
 
 vérifier que les différentes parties fonctionnent ensemble ;
 
-suivre le backlog ;
+suivre le backlog et le Google Sheet ;
 
 communiquer avec le mentor ;
 
 préparer progressivement la démonstration.
 
-Branche proposée
+Branches déjà créées
 
+feature/models
+feature/local-database
 feature/project-architecture
+feature/home-ui
+feature/ma-modification
+doc/task
 
-Première série de tâches
+Série de tâches de Valisoa (T-01 à T-07)
 
-T-01 — Définir l'architecture du projet
-T-02 — Créer les modèles Deck et Flashcard
-T-03 — Préparer la structure des dossiers
-T-04 — Vérifier l'intégration avec develop
+┌──────┬──────────────────────┬──────────────────┬──────────────────┐
+│ ID   │ Tâche                │ Branche          │ Statut           │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-01 │ Architecture du      │ feature/ma-      │ ✅ Terminé       │
+│      │ projet Flutter       │ modification     │ (PR #1)          │
+│      │ (structure GitHub)   │                  │                  │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-02 │ Créer les modèles    │ feature/models   │ ✅ Terminé       │
+│      │ Deck, Flashcard,     │                  │ (PR #3)          │
+│      │ Review               │                  │                  │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-03 │ Document task.md     │ doc/task         │ ✅ Terminé       │
+│      │ (répartition tâches) │                  │ (PR #2)          │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-04 │ Architecture lib/    │ feature/project- │ ✅ Terminé       │
+│      │ + structurer les     │ architecture     │ (PR #4)          │
+│      │ dossiers             │                  │                  │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-05 │ Choisir et configurer│ feature/local-   │ ✅ Terminé       │
+│      │ la database locale   │ database         │ (PR #6)          │
+│      │ (Hive)               │                  │                  │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-06 │ Repository Deck et   │ feature/local-   │ ✅ Terminé       │
+│      │ Repository Flashcard │ database         │ (PR #6)          │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-07 │ Écran Home (liste    │ feature/home-ui  │ 🟡 En review    │
+│      │ + création decks)    │                  │ (à merger dans  │
+│      │                      │                  │ develop)        │
+└──────┴──────────────────────┴──────────────────┴──────────────────┘
 
-6. Achille --- Développement Spaced Repetition
+Tâches suivantes de Valisoa
+
+T-08 Écran Deck (+ gestion des flashcards)  → feature/deck-ui
+T-09 Écran Study (révision)                 → feature/study-ui
+T-10 Import / Export JSON                   → feature/json-import-export
+T-11 Intégration complète                   → feature/integration
+T-12 README final + démo                    → feature/documentation
+
+════════════════════════════════════════════════════════════════════
+
+7. Achille --- Développement Spaced Repetition
 
 Responsabilité principale
 
 Algorithme de répétition espacée et tests associés.
 
-Tâches initiales
+Tâches
 
 définir les règles de calcul ;
 
 implémenter le service de répétition espacée ;
 
-garder l'algorithme indépendant de Flutter ;
+garder l'algorithme indépendant de Flutter (Dart pur) ;
 
 gérer les différents niveaux de réponse ;
 
@@ -312,15 +387,78 @@ Branche proposée
 
 feature/spaced-repetition
 
-Première série de tâches
+Série de tâches d'Achille (T-13 à T-17)
 
-T-05 — Définir les règles du Spaced Repetition
-T-06 — Implémenter le service Spaced Repetition
-T-07 — Calculer l'intervalle suivant
-T-08 — Calculer nextReview
-T-09 — Ajouter les tests unitaires
+┌──────┬──────────────────────┬──────────────────┬──────────────────┐
+│ ID   │ Tâche                │ Détail           │ Statut           │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-13 │ Définir les règles   │ Choix du modèle  │ 🟡 En cours /    │
+│      │ du Spaced Repetition │ (SM-2, Anki,     │ À faire          │
+│      │                      │ Leitner...).     │                  │
+│      │                      │ Documenter dans  │                  │
+│      │                      │ lib/services/    │                  │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-14 │ Implémenter le       │ Créer            │ 🟡 En cours /    │
+│      │ service              │ spaced_          │ À faire          │
+│      │                      │ repetition.dart  │                  │
+│      │                      │ (Dart pur)       │                  │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-15 │ Calculer les         │ À partir du      │ 🟡 En cours /    │
+│      │ intervalles          │ niveau de        │ À faire          │
+│      │                      │ réponse          │                  │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-16 │ Calculer nextReview  │ Mettre à jour    │ 🟡 En cours /    │
+│      │                      │ la date de       │ À faire          │
+│      │                      │ révision de la   │                  │
+│      │                      │ Flashcard        │                  │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-17 │ Ajouter les tests    │ test/spaced_     │ 🟡 En cours /    │
+│      │ unitaires            │ repetition_test  │ À faire          │
+│      │                      │ .dart            │                  │
+└──────┴──────────────────────┴──────────────────┴──────────────────┘
 
-7. Membres qui rejoindront plus tard
+Modèle de données utilisable par Achille
+
+Le modèle Review existe déjà (créé par Valisoa dans lib/models/
+review.dart). Il contient :
+
+enum ReviewQuality { again, hard, good, easy }
+
+class Review {
+  String flashcardId;
+  ReviewQuality quality;
+  int previousInterval;
+  int newInterval;
+  double previousEaseFactor;
+  double newEaseFactor;
+  DateTime reviewedAt;
+}
+
+Le modèle Flashcard contient les champs à mettre à jour par l'algorithme
+:
+
+int repetitions;
+int interval;
+double easeFactor;
+DateTime nextReview;
+
+Achille doit utiliser CES modèles existants et NON en créer de nouveaux,
+pour que l'algorithme s'intègre directement avec la base de données.
+
+Arborescence de travail pour Achille
+
+lib/
+  services/
+    spaced_repetition_service.dart   → à créer
+test/
+  spaced_repetition_service_test.dart → à créer
+
+Règle : l'algorithme ne doit jamais importer package:flutter. Il reste
+100% Dart pur.
+
+════════════════════════════════════════════════════════════════════
+
+8. Membres qui rejoindront plus tard
 
 Les membres absents ne doivent pas être oubliés.
 
@@ -360,80 +498,101 @@ Review
       ↓
 Merge dans develop
 
-8. Backlog initial du projet
+Tâches à attribuer aux nouveaux membres (disponibles)
 
-Le backlog sera complété et ajusté après validation de l'architecture.
+┌──────┬──────────────────────────┬──────────────────────────┐
+│ ID   │ Tâche                    │ Branche suggérée         │
+├──────┼──────────────────────────┼──────────────────────────┤
+│ T-18 │ Écran Home (si non fait) │ feature/home-ui          │
+│ T-19 │ Écran Deck               │ feature/deck-ui          │
+│ T-20 │ Import JSON              │ feature/json-import-export│
+│ T-21 │ Export JSON              │ feature/json-import-export│
+│ T-22 │ Tests Database           │ feature/tests            │
+│ T-23 │ Tests JSON               │ feature/tests            │
+│ T-24 │ QA / correction bugs     │ feature/qa               │
+└──────┴──────────────────────────┴──────────────────────────┘
 
-ID             Module          Tâche                Priorité       Responsable
-initial
+════════════════════════════════════════════════════════════════════
 
-T-01           Architecture    Définir              Haute          Valisoa
-l'architecture
-Flutter
+9. Backlog détaillé et suivi (à reporter dans le Google Sheet)
 
-T-02           Models          Créer le modèle      Haute          Valisoa
-Flashcard
+Légende des statuts :
 
-T-03           Models          Créer le modèle Deck Haute          Valisoa
+[À faire]   → tâche pas encore commencée
+[En cours]  → développement en cours
+[En review] → PR créée, en attente de validation
+[Terminé]   → mergé dans develop
 
-T-04           Project         Structurer les       Haute          Valisoa
-dossiers
+┌──────┬──────────────────────────┬───────────────┬───────────────┬──────────────┬──────────────────────┐
+│ ID   │ Tâche                    │ Module        │ Responsable   │ Statut       │ Lien PR              │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-01 │ Initialisation du projet │ Architecture  │ Valisoa       │ Terminé      │ PR #1                │
+│      │ + structure GitHub       │               │               │              │                      │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-02 │ Modèles Deck, Flashcard, │ Models        │ Valisoa       │ Terminé      │ PR #3                │
+│      │ Review                   │               │               │              │                      │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-03 │ Document task.md         │ Documentation │ Valisoa       │ Terminé      │ PR #2                │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-04 │ Architecture lib/ +      │ Architecture  │ Valisoa       │ Terminé      │ PR #4                │
+│      │ dossiers                 │               │               │              │                      │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-05 │ Database locale (Hive)   │ Database      │ Valisoa       │ Terminé      │ PR #6                │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-06 │ Repository Deck +        │ Database      │ Valisoa       │ Terminé      │ PR #6                │
+│      │ Repository Flashcard     │               │               │              │                      │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-07 │ Écran Home               │ UI            │ Valisoa       │ En review    │ branch feature/      │
+│      │                          │               │               │              │ home-ui              │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-08 │ Écran Deck + flashcards  │ UI            │ Valisoa       │ À faire      │ —                    │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-09 │ Écran Study              │ UI            │ Valisoa       │ À faire      │ —                    │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-10 │ Import/Export JSON       │ JSON          │ Valisoa       │ À faire      │ —                    │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-11 │ Intégration complète     │ Integration   │ Valisoa       │ À faire      │ —                    │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-12 │ README final + démo      │ Documentation │ Valisoa       │ À faire      │ —                    │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-13 │ Règles Spaced Repetition │ Spaced        │ Achille       │ En cours /   │ —                    │
+│      │                          │ Repetition    │               │ À faire      │                      │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-14 │ Service Spaced           │ Spaced        │ Achille       │ En cours /   │ —                    │
+│      │ Repetition               │ Repetition    │               │ À faire      │                      │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-15 │ Calcul des intervalles   │ Spaced        │ Achille       │ En cours /   │ —                    │
+│      │                          │ Repetition    │               │ À faire      │                      │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-16 │ Calcul nextReview        │ Spaced        │ Achille       │ En cours /   │ —                    │
+│      │                          │ Repetition    │               │ À faire      │                      │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-17 │ Tests unitaires SR       │ Tests         │ Achille       │ En cours /   │ —                    │
+│      │                          │               │               │ À faire      │                      │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-18 │ Écran Deck + flashcards  │ UI            │ À attribuer   │ À faire      │ —                    │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-19 │ Import JSON              │ JSON          │ À attribuer   │ À faire      │ —                    │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-20 │ Export JSON              │ JSON          │ À attribuer   │ À faire      │ —                    │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-21 │ Tests Database           │ Tests         │ À attribuer   │ À faire      │ —                    │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-22 │ Tests JSON               │ Tests         │ À attribuer   │ À faire      │ —                    │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-23 │ QA / Q bonus Firestore   │ QA / Bonus    │ À attribuer   │ À faire      │ —                    │
+├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
+│ T-24 │ Démo / présentation      │ Demo          │ Toute l'équipe│ À faire      │ —                    │
+└──────┴──────────────────────────┴───────────────┴───────────────┴──────────────┴──────────────────────┘
 
-T-05           Spaced          Définir les règles   Haute          Achille
-Repetition
+Note importante sur l'état d'Achille
 
-T-06           Spaced          Implémenter          Haute          Achille
-Repetition      l'algorithme
+Au moment de cette mise à jour, aucune branche feature/spaced-repetition
+ni aucun commit n'a encore été poussé sur GitHub pour les tâches T-13 à
+T-17. Ces tâches sont notées « En cours / À faire ». Il faut vérifier
+avec Achille s'il a commencé en local.
 
-T-07           Spaced          Calculer les         Haute          Achille
-Repetition      intervalles
-
-T-08           Spaced          Calculer nextReview  Haute          Achille
-Repetition
-
-T-09           Tests           Tester l'algorithme  Haute          Achille
-
-T-10           Database        Choisir/configurer   Haute          À attribuer
-le stockage local
-
-T-11           Database        Repository Deck      Haute          À attribuer
-
-T-12           Database        Repository Flashcard Haute          À attribuer
-
-T-13           UI              Écran Home           Haute          À attribuer
-
-T-14           UI              Écran Deck           Haute          À attribuer
-
-T-15           UI              Écran Study          Haute          À attribuer
-
-T-16           UI              Création de          Moyenne        À attribuer
-Flashcard
-
-T-17           UI              Modification de      Moyenne        À attribuer
-Flashcard
-
-T-18           JSON            Import JSON          Haute          À attribuer
-
-T-19           JSON            Export JSON          Haute          À attribuer
-
-T-20           Tests           Tests Database       Haute          À attribuer
-
-T-21           Tests           Tests JSON           Moyenne        À attribuer
-
-T-22           Integration     Intégration complète Haute          Valisoa
-
-T-23           QA              Correction des bugs  Haute          Toute l'équipe
-
-T-24           Documentation   README final         Haute          Valisoa +
-équipe
-
-T-25           Demo            Préparation de la    Haute          Toute l'équipe
-démonstration
-
-Les tâches marquées « À attribuer » seront distribuées en fonction des
-compétences et de l'arrivée des autres membres.
-
-9. Règles de Pull Request
+10. Règles de Pull Request
 
 Lorsqu'une tâche est terminée :
 
@@ -465,9 +624,9 @@ Implémenter le calcul de répétition espacée.
 - tests des différents niveaux de réponse
 
 ## Issue
-T-06
+T-14
 
-10. Règle de synchronisation avant développement
+11. Règle de synchronisation avant développement
 
 Avant de commencer une tâche :
 
@@ -484,7 +643,7 @@ git push -u origin feature/ma-tache
 Après intégration de la branche dans develop, supprimer la branche si
 elle n'est plus nécessaire.
 
-11. Suivi quotidien
+12. Suivi quotidien
 
 Chaque jour, l'équipe réalise un stand-up de 10 à 15 minutes.
 
@@ -498,7 +657,7 @@ J'ai terminé le modèle Flashcard.
 
 2. Que fais-tu aujourd'hui ?
 
-Je vais travailler sur le modèle Deck.
+Je vais travailler sur le service Spaced Repetition.
 
 3. As-tu un blocage ?
 
@@ -506,11 +665,11 @@ Non.
 
 ou :
 
-Oui, problème avec le stockage local.
+Oui, problème avec le calcul de nextReview.
 
 Tout blocage important doit être remonté rapidement.
 
-12. Règles de communication
+13. Règles de communication
 
 prévenir l'équipe en cas d'absence prolongée ;
 
@@ -527,7 +686,7 @@ faire des code reviews constructives ;
 
 documenter les choix techniques importants.
 
-13. Priorités du projet
+14. Priorités du projet
 
 L'ordre de priorité est :
 
@@ -540,7 +699,7 @@ L'ordre de priorité est :
 
 Le bonus ne doit pas retarder le MVP.
 
-14. Objectif de livraison
+15. Objectif de livraison
 
 Avant le 16 septembre 2026, le groupe doit disposer d'une version
 démontrable et stable.
@@ -568,7 +727,7 @@ revue finale avec le mentor.
 Le guide prévoit également un freeze du code à J-3, un audit des
 certifications à J-2 et une revue finale avec le mentor.
 
-15. Règle fondamentale du Groupe 34
+16. Règle fondamentale du Groupe 34
 
 Nous avançons avec les membres disponibles. Nous n'attendons pas les
 membres absents pour commencer.
@@ -581,30 +740,34 @@ L'objectif n'est pas qu'une seule personne fasse tout le projet.
 L'objectif est que chaque membre contribue réellement au projet et
 progresse pendant le Summer Camp.
 
-16. État actuel
+17. État actuel
 
 GitHub                     ✅
 main protégée              ✅
 Projet Flutter initialisé  ✅
 develop                    ✅
 
-Architecture               ⏳
-Backlog                    ⏳
-Répartition définitive     ⏳
-Branches feature           ⏳
-Développement MVP          ⏳
+Architecture               ✅
+Modèles                    ✅
+Database locale (Hive)     ✅
+Repositories               ✅
+Écran Home                 🟡 (en review)
+Spaced Repetition          🟡 (en cours par Achille)
+Écran Deck                 ⏳
+Écran Study                ⏳
+Import/Export JSON         ⏳
 Tests                      ⏳
 Documentation              ⏳
 Démo                       ⏳
 
 Prochaine étape recommandée :
 
-Architecture
+Écran Deck + Flashcards (Valisoa)
      ↓
-Models
+Écran Study (Valisoa)
      ↓
-Backlog final
+Import/Export JSON (Valisoa / à attribuer)
      ↓
-Branches
+Intégration complète
      ↓
-Développement
+Démo
