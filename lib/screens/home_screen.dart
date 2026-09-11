@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models/deck.dart';
 import '../repositories/deck_repository.dart';
+import '../repositories/hive_flashcard_repository.dart';
+import 'deck_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.repository});
@@ -86,6 +88,17 @@ class _DeckTile extends StatelessWidget {
   final Deck deck;
   final VoidCallback onDelete;
 
+  Future<void> _openDeck(BuildContext context) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => DeckScreen(
+          deck: deck,
+          flashcardRepository: HiveFlashcardRepository(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -99,9 +112,7 @@ class _DeckTile extends StatelessWidget {
         onPressed: onDelete,
         tooltip: 'Supprimer',
       ),
-      onTap: () {
-        // Navigation vers l'écran Deck (à venir - T-14)
-      },
+      onTap: () => _openDeck(context),
     );
   }
 }
