@@ -5,17 +5,29 @@ import 'package:flashcard/app.dart';
 import 'package:flashcard/models/deck.dart';
 
 import 'fakes/fake_deck_repository.dart';
+import 'fakes/fake_flashcard_repository.dart';
 
 void main() {
   late FakeDeckRepository repository;
+  late FakeFlashcardRepository flashcardRepository;
 
   setUp(() {
     repository = FakeDeckRepository();
+    flashcardRepository = FakeFlashcardRepository();
   });
 
-  testWidgets('Home screen shows empty state', (WidgetTester tester) async {
-    await tester.pumpWidget(FlashcardApp(deckRepository: repository));
+  Future<void> pumpApp(WidgetTester tester) async {
+    await tester.pumpWidget(
+      FlashcardApp(
+        deckRepository: repository,
+        flashcardRepository: flashcardRepository,
+      ),
+    );
     await tester.pumpAndSettle();
+  }
+
+  testWidgets('Home screen shows empty state', (WidgetTester tester) async {
+    await pumpApp(tester);
 
     expect(find.text('Mes decks'), findsOneWidget);
     expect(find.text('Aucun deck. Créez-en un !'), findsOneWidget);
@@ -33,16 +45,14 @@ void main() {
       ),
     );
 
-    await tester.pumpWidget(FlashcardApp(deckRepository: repository));
-    await tester.pumpAndSettle();
+    await pumpApp(tester);
 
     expect(find.text('Français'), findsOneWidget);
     expect(find.text('Vocabulaire'), findsOneWidget);
   });
 
   testWidgets('Creates a deck via dialog', (WidgetTester tester) async {
-    await tester.pumpWidget(FlashcardApp(deckRepository: repository));
-    await tester.pumpAndSettle();
+    await pumpApp(tester);
 
     expect(find.byIcon(Icons.add), findsOneWidget);
     await tester.tap(find.byIcon(Icons.add));
