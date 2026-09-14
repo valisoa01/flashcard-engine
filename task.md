@@ -535,7 +535,7 @@ avant le 16 septembre.
 │ T-B4 │ Tests Database           │ Valisoa                  │
 │ T-B5 │ Tests JSON               │ Valisoa                  │
 │ T-B6 │ QA / correction bugs     │ Valisoa                  │
-│ T-B7 │ Bonus Firestore          │ Reporté (si temps)       │
+│ T-B7 │ Bonus Firestore          │ ✅ Implémenté            │
 └──────┴──────────────────────────┴──────────────────────────┘
 
 ════════════════════════════════════════════════════════════════════
