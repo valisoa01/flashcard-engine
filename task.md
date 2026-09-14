@@ -372,7 +372,11 @@ Tâches terminées par Valisoa seul (14 septembre)
 ✅ T-10 Import / Export JSON                   → feature/json-import-export
 ✅ T-11 Intégration complète                   → feature/integration
 ✅ T-12 README final + démo                    → feature/documentation
-⬜ T-24 Démo / présentation (16 septembre)
+🟡 T-24 Démo / présentation (16 septembre)     → feature/presentation
+   (guide de présentation PRESENTATION.md créé ; captures restantes)
+
+Note : un ami rejoint pour la PRÉSENTATION uniquement (pas de code).
+Il doit lire PRESENTATION.md pour aider à présenter le projet.
 
 ════════════════════════════════════════════════════════════════════
 
@@ -597,7 +601,8 @@ Légende des statuts :
 │ T-17 │ Tests unitaires SR       │ Tests         │ Valisoa       │ Terminé      │ feature/spaced-      │
 │      │                          │               │ (repris)      │              │ repetition           │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-24 │ Démo / présentation      │ Demo          │ Valisoa       │ À faire      │ —                    │
+│ T-24 │ Démo / présentation      │ Demo          │ Valisoa + ami  │ 🟡 En cours │ feature/            │
+│      │                          │               │ (présentation)│ (guide créé)│ presentation         │
 └──────┴──────────────────────────┴───────────────┴───────────────┴──────────────┴──────────────────────┘
 
 Plan des 2 jours restants (14 → 16 septembre)
@@ -610,8 +615,10 @@ Dimanche 14 septembre : ✅ fait
 
 Lundi 15 septembre :
 - Dernière revue : `flutter test` + `flutter analyze` sur develop.
-- README final (T-12, fait sur feature/documentation) → PR.
-- Scénario de démonstration + captures/GIFs (T-24).
+- README final (T-12) : ✅ fait.
+- Guide de présentation (T-24) : ✅ PRESENTATION.md créé (à partager
+  avec l'ami qui présente).
+- Captures d'écran / GIFs pour le support de présentation.
 
 Mardi 16 septembre (J-0) :
 - Démo / présentation (T-24), revue finale avec le mentor.
