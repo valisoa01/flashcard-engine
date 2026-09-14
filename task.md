@@ -12,9 +12,10 @@ données locale, import/export JSON.
 Bonus : Synchronisation optionnelle Firestore.
 État actuel : Projet Flutter initialisé, dépôt GitHub créé, branche
 main protégée, branche develop créée.
-Composition de l'équipe : équipe de 5 personnes listées. Seuls 2 sont
-actifs (Valisoa et Achille). Les autres membres n'ont pas participé pour
-l'instant.
+Composition de l'équipe : l'ensemble des membres (y compris Achille)
+ont quitté le projet le 12 septembre 2026. Valisoa poursuit désormais
+le développement SEUL jusqu'à la présentation du 16 septembre.
+Cette mise à jour (14 septembre) adapte le document en conséquence.
 
 1. Objectif du document
 
@@ -37,9 +38,9 @@ intégrer progressivement les nouveaux membres ;
 
 garder une base de code stable jusqu'au rendu.
 
-Règle importante : le projet avance avec les membres actuellement
-disponibles. Les membres qui rejoindront le groupe plus tard seront
-intégrés progressivement sur les tâches restantes.
+Règle importante : le projet continue avec les membres disponibles.
+Toutes les tâches restantes sont désormais portées par Valisoa seul
+jusqu'au rendu du 16 septembre 2026.
 
 2. Projet : FlashCard Engine
 
@@ -248,50 +249,39 @@ git commit -m "fix: correct next review calculation"
 
 5. RÉPARTITION DES RESPONSABILITÉS (point important)
 
-L'équipe était composée de 6 personnes au départ (le chef de groupe
-plus 5 coéquipiers listés sur le projet). À ce jour seuls 2 membres sont
-actifs et contribuent au projet :
+L'équipe comptait 6 personnes au départ (le chef de groupe plus 5
+coéquipiers listés sur le projet). À la date du 12 septembre 2026, tous
+les coéquipiers (dont Achille) ont quitté le projet. Depuis, Valisoa
+(chef de groupe) développe l'application seul et reprend toutes les
+tâches restantes, y compris le Spaced Repetition initialement confié à
+Achille.
 
-Valisoa (Chef de groupe) : Chef de groupe.
-Achille : Développeur Spaced Repetition.
+Valisoa (Chef de groupe) : Architecture, Modèles, Base de données,
+                              Interface (UI), Intégration, JSON,
+                              Spaced Repetition, Tests, Documentation,
+                              Démo.
 
-Les autres membres inscrits (benedicte, sawadogoahmedelamine,
-ouedmarina, abel) n'ont pas encore participé au développement. S'ils
- rejoignent le
-projet plus tard, ils seront intégrés progressivement sur les tâches
-restantes (voir section 8).
-
-Conformément à la règle 16 : le projet avance avec les membres
-actuellement disponibles. On n'attend pas les membres absents pour
-commencer.
+⚠️ À partir de maintenant, TOUTES les tâches (T-08 à T-24) sont gérées
+   par Valisoa seul. Les conventions Git restent appliquées (branche
+   feature, PR vers develop).
 
 La répartition suit le principe suivant :
 
 Un module = une personne responsable.
 
-Chaque membre travaille sur SA branche et ne modifie pas le travail des
-autres.
-
-Les deux membres actifs se partagent ainsi les modules :
+Un seul membre est désormais actif. Il reprend tous les modules restants.
 
 Valisoa (Chef de groupe) : Architecture, Modèles, Base de données,
                               Interface (UI), Intégration, JSON,
-                              Documentation.
-
-Achille : Spaced Repetition (algorithme pur + tests).
+                              Spaced Repetition, Documentation.
 
 Pour éviter toute confusion :
 
-les tâches à ORIENTATION TECHNIQUE et VISUELLE (modèles, base de
-données, écrans, JSON) reviennent à Valisoa en attendant que d'autres
-membres rejoignent le groupe ;
+toutes les tâches restantes (UI, JSON, Spaced Repetition, tests,
+  intégration, démo) reviennent à Valisoa.
 
-les tâches de LOGIQUE PURE (algorithme Spaced Repetition) reviennent
-à Achille.
-
-Important : le développement se fait EN PARALLÈLE. Achille peut
-commencer l'algorithme sans attendre Valisoa, et inversement, car les
-deux modules sont indépendants.
+Important : le développement se fait en solo mais reste organisé par
+branches feature pour garder un historique propre jusqu'au rendu.
 
 ════════════════════════════════════════════════════════════════════
 
@@ -341,7 +331,7 @@ feature/home-ui
 feature/ma-modification
 doc/task
 
-Série de tâches de Valisoa (T-01 à T-07)
+Série de tâches de Valisoa (T-01 à T-08)
 
 ┌──────┬──────────────────────┬──────────────────┬──────────────────┐
 │ ID   │ Tâche                │ Branche          │ Statut           │
@@ -368,28 +358,35 @@ Série de tâches de Valisoa (T-01 à T-07)
 │ T-06 │ Repository Deck et   │ feature/local-   │ ✅ Terminé       │
 │      │ Repository Flashcard │ database         │ (PR #6)          │
 ├──────┼──────────────────────┼──────────────────┼──────────────────┤
-│ T-07 │ Écran Home (liste    │ feature/home-ui  │ 🟡 En review    │
-│      │ + création decks)    │                  │ (à merger dans  │
-│      │                      │                  │ develop)        │
+│ T-07 │ Écran Home (liste    │ feature/home-ui  │ ✅ Terminé       │
+│      │ + création decks)    │                  │ (PR #7)          │
+├──────┼──────────────────────┼──────────────────┼──────────────────┤
+│ T-08 │ Écran Deck + gestion │ feature/deck-ui  │ ✅ Terminé       │
+│      │ des flashcards       │                  │ (PR #11)         │
 └──────┴──────────────────────┴──────────────────┴──────────────────┘
 
-Tâches suivantes de Valisoa
+Tâches restantes de Valisoa (seul, J-2 avant la présentation)
 
-T-08 Écran Deck (+ gestion des flashcards)  → feature/deck-ui
-T-09 Écran Study (révision)                 → feature/study-ui
+T-09 Écran Study (révision)                  → feature/study-ui
+T-13 à T-17 Spaced Repetition (repris)      → feature/spaced-repetition
 T-10 Import / Export JSON                   → feature/json-import-export
 T-11 Intégration complète                   → feature/integration
 T-12 README final + démo                    → feature/documentation
+T-24 Démo / présentation (16 septembre)
 
 ════════════════════════════════════════════════════════════════════
 
-7. Achille --- Développement Spaced Repetition
+7. Spaced Repetition --- repris par Valisoa (départ d'Achille)
+
+⚠️ Achille a quitté le projet le 12 septembre 2026. Les tâches T-13 à
+T-17 n'ont PAS été commencées (aucun fichier poussé sur GitHub).
+Valisoa reprend l'intégralité du module Spaced Repetition.
 
 Responsabilité principale
 
-Algorithme de répétition espacée et tests associés.
+Algorithme de répétition espacée et tests associés (Dart pur).
 
-Tâches
+Tâches (reprises)
 
 définir les règles de calcul ;
 
@@ -411,37 +408,37 @@ Branche proposée
 
 feature/spaced-repetition
 
-Série de tâches d'Achille (T-13 à T-17)
+Série de tâches Spaced Repetition (T-13 à T-17, reprises par Valisoa)
 
 ┌──────┬──────────────────────┬──────────────────┬──────────────────┐
 │ ID   │ Tâche                │ Détail           │ Statut           │
 ├──────┼──────────────────────┼──────────────────┼──────────────────┤
-│ T-13 │ Définir les règles   │ Choix du modèle  │ 🟡 En cours /    │
-│      │ du Spaced Repetition │ (SM-2, Anki,     │ À faire          │
-│      │                      │ Leitner...).     │                  │
+│ T-13 │ Définir les règles   │ Choix du modèle  │ 🔴 À faire       │
+│      │ du Spaced Repetition │ (SM-2, Anki,     │ (repris,         │
+│      │                      │ Leitner...).     │ Achille parti)   │
 │      │                      │ Documenter dans  │                  │
 │      │                      │ lib/services/    │                  │
 ├──────┼──────────────────────┼──────────────────┼──────────────────┤
-│ T-14 │ Implémenter le       │ Créer            │ 🟡 En cours /    │
-│      │ service              │ spaced_          │ À faire          │
-│      │                      │ repetition.dart  │                  │
+│ T-14 │ Implémenter le       │ Créer            │ 🔴 À faire       │
+│      │ service              │ spaced_          │ (repris,         │
+│      │                      │ repetition.dart  │ Achille parti)   │
 │      │                      │ (Dart pur)       │                  │
 ├──────┼──────────────────────┼──────────────────┼──────────────────┤
-│ T-15 │ Calculer les         │ À partir du      │ 🟡 En cours /    │
-│      │ intervalles          │ niveau de        │ À faire          │
+│ T-15 │ Calculer les         │ À partir du      │ 🔴 À faire       │
+│      │ intervalles          │ niveau de        │ (repris)         │
 │      │                      │ réponse          │                  │
 ├──────┼──────────────────────┼──────────────────┼──────────────────┤
-│ T-16 │ Calculer nextReview  │ Mettre à jour    │ 🟡 En cours /    │
-│      │                      │ la date de       │ À faire          │
+│ T-16 │ Calculer nextReview  │ Mettre à jour    │ 🔴 À faire       │
+│      │                      │ la date de       │ (repris)         │
 │      │                      │ révision de la   │                  │
 │      │                      │ Flashcard        │                  │
 ├──────┼──────────────────────┼──────────────────┼──────────────────┤
-│ T-17 │ Ajouter les tests    │ test/spaced_     │ 🟡 En cours /    │
-│      │ unitaires            │ repetition_test  │ À faire          │
+│ T-17 │ Ajouter les tests    │ test/spaced_     │ 🔴 À faire       │
+│      │ unitaires            │ repetition_test  │ (repris)         │
 │      │                      │ .dart            │                  │
 └──────┴──────────────────────┴──────────────────┴──────────────────┘
 
-Modèle de données utilisable par Achille
+Modèle de données utilisable (existants)
 
 Le modèle Review existe déjà (créé par Valisoa dans lib/models/
 review.dart). Il contient :
@@ -466,10 +463,10 @@ int interval;
 double easeFactor;
 DateTime nextReview;
 
-Achille doit utiliser CES modèles existants et NON en créer de nouveaux,
+Valisoa doit utiliser CES modèles existants et NON en créer de nouveaux,
 pour que l'algorithme s'intègre directement avec la base de données.
 
-Arborescence de travail pour Achille
+Arborescence de travail
 
 lib/
   services/
@@ -482,11 +479,13 @@ Règle : l'algorithme ne doit jamais importer package:flutter. Il reste
 
 ════════════════════════════════════════════════════════════════════
 
-8. Membres qui rejoindront plus tard
+8. Note sur les anciens membres (départ de l'équipe)
 
-Les membres absents ne doivent pas être oubliés.
+Tous les coéquipiers ont quitté le projet. Aucun nouveau membre ne
+rejoint le groupe avant le rendu. La procédure d'intégration ci-dessous
+est conservée uniquement à titre informatif.
 
-Lorsqu'un nouveau membre rejoint le groupe :
+Lorsqu'un nouveau membre rejoignait le groupe :
 
 renseigner ses informations dans le Google Sheet ;
 
@@ -524,20 +523,19 @@ Merge dans develop
 
 Tâches à attribuer aux nouveaux membres (disponibles)
 
-Important : tant qu'aucun nouveau membre n'a rejoint, ces tâches sont
-reprises par Valisoa (ou réparties avec Achille si l'une concerne le
-Spaced Repetition).
+Important : toutes ces tâches sont désormais exécutées par Valisoa seul
+avant le 16 septembre.
 
 ┌──────┬──────────────────────────┬──────────────────────────┐
-│ ID   │ Tâche                    │ Branche suggérée         │
+│ ID   │ Tâche                    │ Prise en charge          │
 ├──────┼──────────────────────────┼──────────────────────────┤
-│ T-B1 │ Écran Study (UI)         │ feature/study-ui         │
-│ T-B2 │ Import JSON              │ feature/json-import-export│
-│ T-B3 │ Export JSON              │ feature/json-import-export│
-│ T-B4 │ Tests Database           │ feature/tests            │
-│ T-B5 │ Tests JSON               │ feature/tests            │
-│ T-B6 │ QA / correction bugs     │ feature/qa               │
-│ T-B7 │ Bonus Firestore          │ feature/firestore-sync   │
+│ T-B1 │ Écran Study (UI)         │ Valisoa (fuse avec T-09) │
+│ T-B2 │ Import JSON              │ Valisoa (fuse avec T-10) │
+│ T-B3 │ Export JSON              │ Valisoa (fuse avec T-10) │
+│ T-B4 │ Tests Database           │ Valisoa                  │
+│ T-B5 │ Tests JSON               │ Valisoa                  │
+│ T-B6 │ QA / correction bugs     │ Valisoa                  │
+│ T-B7 │ Bonus Firestore          │ Reporté (si temps)       │
 └──────┴──────────────────────────┴──────────────────────────┘
 
 ════════════════════════════════════════════════════════════════════
@@ -573,7 +571,7 @@ Légende des statuts :
 │ T-07 │ Écran Home               │ UI            │ Valisoa       │ Terminé      │ PR #7                │
 │      │                          │               │               │              │                      │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-08 │ Écran Deck + flashcards  │ UI            │ Valisoa       │ À faire      │ —                    │
+│ T-08 │ Écran Deck + flashcards  │ UI            │ Valisoa       │ Terminé      │ PR #11               │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
 │ T-09 │ Écran Study              │ UI            │ Valisoa       │ À faire      │ —                    │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
@@ -583,30 +581,44 @@ Légende des statuts :
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
 │ T-12 │ README final + démo      │ Documentation │ Valisoa       │ À faire      │ —                    │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-13 │ Règles Spaced Repetition │ Spaced        │ Achille       │ En cours /   │ —                    │
-│      │                          │ Repetition    │               │ À faire      │                      │
+│ T-13 │ Règles Spaced Repetition │ Spaced        │ Valisoa       │ À faire      │ —                    │
+│      │                          │ Repetition    │ (repris)      │              │                      │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-14 │ Service Spaced           │ Spaced        │ Achille       │ En cours /   │ —                    │
-│      │ Repetition               │ Repetition    │               │ À faire      │                      │
+│ T-14 │ Service Spaced           │ Spaced        │ Valisoa       │ À faire      │ —                    │
+│      │ Repetition               │ Repetition    │ (repris)      │              │                      │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-15 │ Calcul des intervalles   │ Spaced        │ Achille       │ En cours /   │ —                    │
-│      │                          │ Repetition    │               │ À faire      │                      │
+│ T-15 │ Calcul des intervalles   │ Spaced        │ Valisoa       │ À faire      │ —                    │
+│      │                          │ Repetition    │ (repris)      │              │                      │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-16 │ Calcul nextReview        │ Spaced        │ Achille       │ En cours /   │ —                    │
-│      │                          │ Repetition    │               │ À faire      │                      │
+│ T-16 │ Calcul nextReview        │ Spaced        │ Valisoa       │ À faire      │ —                    │
+│      │                          │ Repetition    │ (repris)      │              │                      │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-17 │ Tests unitaires SR       │ Tests         │ Achille       │ En cours /   │ —                    │
-│      │                          │               │               │ À faire      │                      │
+│ T-17 │ Tests unitaires SR       │ Tests         │ Valisoa       │ À faire      │ —                    │
+│      │                          │               │ (repris)      │              │                      │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-24 │ Démo / présentation      │ Demo          │ Toute l'équipe│ À faire      │ —                    │
+│ T-24 │ Démo / présentation      │ Demo          │ Valisoa       │ À faire      │ —                    │
 └──────┴──────────────────────────┴───────────────┴───────────────┴──────────────┴──────────────────────┘
 
-Note importante sur l'état d'Achille
+Plan des 2 jours restants (14 → 16 septembre)
 
-Au moment de cette mise à jour, aucune branche feature/spaced-repetition
-ni aucun commit n'a encore été poussé sur GitHub pour les tâches T-13 à
-T-17. Ces tâches sont notées « En cours / À faire ». Il faut vérifier
-avec Achille s'il a commencé en local.
+Dimanche 14 septembre :
+- Spaced Repetition (T-13 à T-17) : règles SM-2, service Dart pur, tests.
+- Écran Study (T-09) : session de révision reliée au service SR.
+
+Lundi 15 septembre :
+- Import / Export JSON (T-10).
+- Intégration complète (T-11) + tests passants (T-B4, T-B5).
+- README final (T-12).
+
+Mardi 16 septembre (J-0) :
+- Démo / présentation (T-24), revue finale avec le mentor.
+
+Note importante sur l'état du Spaced Repetition
+
+Au moment de cette mise à jour (14 septembre), aucune branche
+feature/spaced-repetition ni aucun commit n'a été poussé sur GitHub pour
+les tâches T-13 à T-17. Achille étant parti, ces tâches sont reprises
+par Valisoa et notées « À faire » dans ce document.
 
 10. Règles de Pull Request
 
@@ -661,9 +673,9 @@ elle n'est plus nécessaire.
 
 12. Suivi quotidien
 
-Chaque jour, l'équipe réalise un stand-up de 10 à 15 minutes.
-
-Chaque membre répond :
+L'équipe n'étant plus active, le stand-up est remplacé par un suivi
+personnel de Valisoa, consigné dans ce document (statuts du backlog) et
+par commit. Les 3 questions restent utiles :
 
 1. Qu'as-tu fait hier ?
 
@@ -717,7 +729,7 @@ Le bonus ne doit pas retarder le MVP.
 
 15. Objectif de livraison
 
-Avant le 16 septembre 2026, le groupe doit disposer d'une version
+Avant le 16 septembre 2026, Valisoa doit disposer (seul) d'une version
 démontrable et stable.
 
 La préparation finale doit comprendre :
@@ -748,15 +760,10 @@ certifications à J-2 et une revue finale avec le mentor.
 Nous avançons avec les membres disponibles. Nous n'attendons pas les
 membres absents pour commencer.
 
-Les nouveaux membres seront intégrés progressivement et recevront des
-tâches adaptées.
+L'équipe étant partie, le développement est poursuivi seul par Valisoa
+jusqu'à la présentation du 16 septembre.
 
-L'objectif n'est pas qu'une seule personne fasse tout le projet.
-
-L'objectif est que chaque membre contribue réellement au projet et
-progresse pendant le Summer Camp.
-
-17. État actuel
+17. État actuel (mise à jour du 14 septembre)
 
 GitHub                     ✅
 main protégée              ✅
@@ -768,8 +775,8 @@ Modèles                    ✅
 Database locale (Hive)     ✅
 Repositories               ✅
 Écran Home                 ✅ Terminé
-Spaced Repetition          🟡 (en cours par Achille)
-Écran Deck                 ⏳
+Écran Deck                 ✅ Terminé (PR #11)
+Spaced Repetition          🔴 À faire (repris, Achille parti)
 Écran Study                ⏳
 Import/Export JSON         ⏳
 Tests                      ⏳
@@ -778,12 +785,12 @@ Démo                       ⏳
 
 Prochaine étape recommandée :
 
-Écran Deck + Flashcards (Valisoa)
+Spaced Repetition (T-13 → T-17)
      ↓
-Écran Study (Valisoa)
+Écran Study (T-09)
      ↓
-Import/Export JSON (Valisoa)
+Import/Export JSON (T-10)
      ↓
-Intégration complète
+Intégration complète (T-11) + tests
      ↓
-Démo
+README + démo (T-12, T-24)
