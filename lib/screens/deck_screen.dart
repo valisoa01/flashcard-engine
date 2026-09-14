@@ -4,6 +4,7 @@ import '../models/deck.dart';
 import '../models/flashcard.dart';
 import '../repositories/flashcard_repository.dart';
 import 'flashcard_detail_screen.dart';
+import 'study_screen.dart';
 
 class DeckScreen extends StatefulWidget {
   const DeckScreen({
@@ -81,7 +82,18 @@ class _DeckScreenState extends State<DeckScreen> {
           final cards = snapshot.data ?? [];
           return ListView(
             children: [
-              _DeckHeader(deck: widget.deck, cardCount: cards.length),
+              _DeckHeader(
+                deck: widget.deck,
+                cardCount: cards.length,
+                onStudy: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => StudyScreen(
+                      deck: widget.deck,
+                      flashcardRepository: widget.flashcardRepository,
+                    ),
+                  ),
+                ),
+              ),
               if (cards.isEmpty)
                 const Padding(
                   padding: EdgeInsets.all(32),
@@ -104,10 +116,15 @@ class _DeckScreenState extends State<DeckScreen> {
 }
 
 class _DeckHeader extends StatelessWidget {
-  const _DeckHeader({required this.deck, required this.cardCount});
+  const _DeckHeader({
+    required this.deck,
+    required this.cardCount,
+    required this.onStudy,
+  });
 
   final Deck deck;
   final int cardCount;
+  final VoidCallback onStudy;
 
   @override
   Widget build(BuildContext context) {
@@ -119,11 +136,21 @@ class _DeckHeader extends StatelessWidget {
         children: [
           Text(deck.description, style: theme.textTheme.bodyMedium),
           const SizedBox(height: 8),
-          Text(
-            '$cardCount carte${cardCount > 1 ? 's' : ''}',
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: theme.colorScheme.primary,
-            ),
+          Row(
+            children: [
+              Text(
+                '$cardCount carte${cardCount > 1 ? 's' : ''}',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+              const Spacer(),
+              FilledButton.icon(
+                onPressed: onStudy,
+                icon: const Icon(Icons.school_outlined),
+                label: const Text('Réviser'),
+              ),
+            ],
           ),
         ],
       ),
