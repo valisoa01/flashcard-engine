@@ -7,6 +7,20 @@ import '../repositories/flashcard_repository.dart';
 import '../services/firestore_sync_service.dart';
 import '../services/json_service.dart';
 import 'deck_screen.dart';
+const List<List<Color>> _deckPalette = [
+  [Color(0xFF6C63FF), Color(0xFF9D8CFF)],
+  [Color(0xFF0EA5E9), Color(0xFF67D3F7)],
+  [Color(0xFFFF6B6B), Color(0xFFFF9E7D)],
+  [Color(0xFFFFA62B), Color(0xFFFFCB6B)],
+  [Color(0xFF06D6A0), Color(0xFF5CE8BE)],
+  [Color(0xFFEF476F), Color(0xFFFF8FAE)],
+  [Color(0xFF3A86FF), Color(0xFF7FB1FF)],
+];
+
+List<Color> _colorsForDeck(String id) {
+  final index = id.hashCode.abs() % _deckPalette.length;
+  return _deckPalette[index];
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -22,6 +36,21 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+class _HomeData {
+  const _HomeData({required this.decks, required this.cardsByDeck});
+
+  final List<Deck> decks;
+  final Map<String, List<Flashcard>> cardsByDeck;
+
+  int get totalCards =>
+      cardsByDeck.values.fold(0, (sum, cards) => sum + cards.length);
+
+  int get totalDue => cardsByDeck.values.fold(
+        0,
+        (sum, cards) => sum + cards.where((c) => c.isDue).length,
+      );
+}
+
 class _HomeScreenState extends State<HomeScreen> {
   final JsonService _jsonService = JsonService();
 
@@ -29,18 +58,32 @@ class _HomeScreenState extends State<HomeScreen> {
   late final FlashcardRepository _flashcardRepository =
       widget.flashcardRepository;
 
-  late Future<List<Deck>> _decksFuture;
+  Future<_HomeData> _dataFuture = Future.value(
+    const _HomeData(decks: [], cardsByDeck: {}),
+  );
 
   @override
   void initState() {
     super.initState();
-    _decksFuture = _repository.getAll();
+    _dataFuture = _loadData();
   }
 
-  void _refresh() {
+  Future<_HomeData> _loadData() async {
+    final decks = await _repository.getAll();
+    final cards = await _flashcardRepository.getAll();
+    final cardsByDeck = <String, List<Flashcard>>{};
+    for (final card in cards) {
+      cardsByDeck.putIfAbsent(card.deckId, () => []).add(card);
+    }
+    return _HomeData(decks: decks, cardsByDeck: cardsByDeck);
+  }
+
+  Future<void> _refresh() async {
+    final data = _loadData();
     setState(() {
-      _decksFuture = _repository.getAll();
+      _dataFuture = data;
     });
+    await data;
   }
 
   Future<void> _createDeck() async {
@@ -54,9 +97,35 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _deleteDeck(Deck deck) async {
-    await _repository.delete(deck.id);
-    _refresh();
+  Future<void> _confirmDeleteDeck(Deck deck) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Supprimer ce deck ?'),
+        content: Text(
+          'Le deck « ${deck.title} » et toutes ses cartes seront '
+          'définitivement supprimés.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Annuler'),
+          ),
+          FilledButton.tonal(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
+              foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
+            ),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Supprimer'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await _repository.delete(deck.id);
+      _refresh();
+    }
   }
 
   Future<List<Flashcard>> _allFlashcards() =>
@@ -114,54 +183,339 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mes decks'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.cloud_sync_outlined),
-            tooltip: 'Synchronisation Firestore',
-            onPressed: _openSyncDialog,
+      extendBodyBehindAppBar: true,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _createDeck,
+        tooltip: 'Créer un deck',
+        icon: const Icon(Icons.add),
+        label: const Text('Nouveau deck'),
+      ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: FutureBuilder<_HomeData>(
+          future: _dataFuture,
+          builder: (context, snapshot) {
+            final isLoading = snapshot.connectionState != ConnectionState.done;
+            final data = snapshot.data;
+            final decks = data?.decks ?? [];
+
+            return CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                _HomeHeader(
+                  deckCount: decks.length,
+                  cardCount: data?.totalCards ?? 0,
+                  dueCount: data?.totalDue ?? 0,
+                  onSync: _openSyncDialog,
+                  onImport: _importJson,
+                  onExport: _exportJson,
+                ),
+                if (isLoading)
+                  const SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (snapshot.hasError)
+                  SliverFillRemaining(
+                    child: Center(
+                      child: Text('Erreur : ${snapshot.error}'),
+                    ),
+                  )
+                else if (decks.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: _EmptyState(onCreate: _createDeck),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
+                    sliver: SliverLayoutBuilder(
+                      builder: (context, constraints) {
+                        final columns = (constraints.crossAxisExtent / 240)
+                            .floor()
+                            .clamp(1, 4)
+                            .toInt();
+                        return SliverGrid(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: columns,
+                            mainAxisSpacing: 14,
+                            crossAxisSpacing: 14,
+                            childAspectRatio: 1.35,
+                          ),
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final deck = decks[index];
+                              final cards =
+                                  data!.cardsByDeck[deck.id] ?? const [];
+                              return _DeckTile(
+                                deck: deck,
+                                cardCount: cards.length,
+                                dueCount:
+                                    cards.where((c) => c.isDue).length,
+                                flashcardRepository:
+                                    widget.flashcardRepository,
+                                onDelete: () => _confirmDeleteDeck(deck),
+                                onChanged: _refresh,
+                              );
+                            },
+                            childCount: decks.length,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
+      ),
+      backgroundColor: colorScheme.surface,
+    );
+  }
+}
+
+class _HomeHeader extends StatelessWidget {
+  const _HomeHeader({
+    required this.deckCount,
+    required this.cardCount,
+    required this.dueCount,
+    required this.onSync,
+    required this.onImport,
+    required this.onExport,
+  });
+
+  final int deckCount;
+  final int cardCount;
+  final int dueCount;
+  final VoidCallback onSync;
+  final VoidCallback onImport;
+  final VoidCallback onExport;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return SliverAppBar(
+      pinned: true,
+      stretch: true,
+      expandedHeight: 210,
+      backgroundColor: colorScheme.primary,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.cloud_sync_outlined),
+          tooltip: 'Synchronisation Firestore',
+          onPressed: onSync,
+        ),
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.more_vert),
+          tooltip: 'Plus d\u2019options',
+          onSelected: (value) {
+            if (value == 'import') onImport();
+            if (value == 'export') onExport();
+          },
+          itemBuilder: (context) => const [
+            PopupMenuItem(
+              value: 'import',
+              child: ListTile(
+                leading: Icon(Icons.upload_file_outlined),
+                title: Text('Importer JSON'),
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+            PopupMenuItem(
+              value: 'export',
+              child: ListTile(
+                leading: Icon(Icons.download_outlined),
+                title: Text('Exporter JSON'),
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(width: 4),
+      ],
+      flexibleSpace: FlexibleSpaceBar(
+        stretchModes: const [StretchMode.zoomBackground],
+        background: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                colorScheme.primary,
+                colorScheme.tertiary,
+              ],
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.upload_file_outlined),
-            tooltip: 'Importer JSON',
-            onPressed: _importJson,
+          child: Stack(
+            children: [
+              Positioned(
+                right: -30,
+                top: -30,
+                child: Icon(
+                  Icons.style_outlined,
+                  size: 180,
+                  color: Colors.white.withValues(alpha: 0.08),
+                ),
+              ),
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Text(
+                        'FlashCard Engine',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Apprends un peu, tous les jours.',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          _StatPill(
+                            icon: Icons.style_outlined,
+                            label: 'decks',
+                            value: '$deckCount',
+                          ),
+                          const SizedBox(width: 10),
+                          _StatPill(
+                            icon: Icons.credit_card_outlined,
+                            label: 'cartes',
+                            value: '$cardCount',
+                          ),
+                          const SizedBox(width: 10),
+                          _StatPill(
+                            icon: Icons.local_fire_department_outlined,
+                            label: 'à réviser',
+                            value: '$dueCount',
+                            highlight: dueCount > 0,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.download_outlined),
-            tooltip: 'Exporter JSON',
-            onPressed: _exportJson,
+        ),
+      ),
+    );
+  }
+}
+
+class _StatPill extends StatelessWidget {
+  const _StatPill({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.highlight = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final bool highlight;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: highlight
+            ? Colors.white.withValues(alpha: 0.95)
+            : Colors.white.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 15,
+            color: highlight ? const Color(0xFFEF476F) : Colors.white,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            '$value $label',
+            style: TextStyle(
+              color: highlight ? const Color(0xFFEF476F) : Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 12.5,
+            ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _createDeck,
-        tooltip: 'Créer un deck',
-        child: const Icon(Icons.add),
-      ),
-      body: FutureBuilder<List<Deck>>(
-        future: _decksFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Erreur : ${snapshot.error}'));
-          }
-          final decks = snapshot.data ?? [];
-          if (decks.isEmpty) {
-            return const Center(child: Text('Aucun deck. Créez-en un !'));
-          }
-          return ListView.builder(
-            itemCount: decks.length,
-            itemBuilder: (context, index) => _DeckTile(
-              deck: decks[index],
-              flashcardRepository: widget.flashcardRepository,
-              onDelete: () => _deleteDeck(decks[index]),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState({required this.onCreate});
+
+  final VoidCallback onCreate;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [colorScheme.primary, colorScheme.tertiary],
+                ),
+              ),
+              child: const Icon(
+                Icons.auto_awesome_outlined,
+                color: Colors.white,
+                size: 40,
+              ),
             ),
-          );
-        },
+            const SizedBox(height: 24),
+            Text(
+              'Aucun deck pour le moment',
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Crée ton premier deck pour commencer à apprendre '
+              'avec la répétition espacée.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: colorScheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: onCreate,
+              icon: const Icon(Icons.add),
+              label: const Text('Créer mon premier deck'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -170,13 +524,19 @@ class _HomeScreenState extends State<HomeScreen> {
 class _DeckTile extends StatelessWidget {
   const _DeckTile({
     required this.deck,
+    required this.cardCount,
+    required this.dueCount,
     required this.flashcardRepository,
     required this.onDelete,
+    required this.onChanged,
   });
 
   final Deck deck;
+  final int cardCount;
+  final int dueCount;
   final FlashcardRepository flashcardRepository;
   final VoidCallback onDelete;
+  final VoidCallback onChanged;
 
   Future<void> _openDeck(BuildContext context) async {
     await Navigator.of(context).push(
@@ -187,22 +547,150 @@ class _DeckTile extends StatelessWidget {
         ),
       ),
     );
+    onChanged();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        child: Text(deck.title.isEmpty ? '?' : deck.title[0].toUpperCase()),
+    final colors = _colorsForDeck(deck.id);
+    final initial = deck.title.isEmpty ? '?' : deck.title[0].toUpperCase();
+
+    return Card(
+      child: InkWell(
+        onTap: () => _openDeck(context),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 64,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: colors,
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 14,
+                    bottom: -18,
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.white,
+                      child: Text(
+                        initial,
+                        style: TextStyle(
+                          color: colors.first,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 2,
+                    top: 2,
+                    child: IconButton(
+                      icon: const Icon(Icons.delete_outline, size: 20),
+                      color: Colors.white,
+                      tooltip: 'Supprimer',
+                      onPressed: onDelete,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 24, 14, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      deck.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15.5,
+                      ),
+                    ),
+                    if (deck.description.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        deck.description,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                    const Spacer(),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        _CountChip(
+                          icon: Icons.credit_card_outlined,
+                          label: '$cardCount carte${cardCount > 1 ? 's' : ''}',
+                          color: colors.first,
+                        ),
+                        if (dueCount > 0)
+                          _CountChip(
+                            icon: Icons.local_fire_department_outlined,
+                            label: '$dueCount à réviser',
+                            color: const Color(0xFFEF476F),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-      title: Text(deck.title),
-      subtitle: Text(deck.description),
-      trailing: IconButton(
-        icon: const Icon(Icons.delete_outline),
-        onPressed: onDelete,
-        tooltip: 'Supprimer',
+    );
+  }
+}
+
+class _CountChip extends StatelessWidget {
+  const _CountChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
       ),
-      onTap: () => _openDeck(context),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
