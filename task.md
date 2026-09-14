@@ -365,14 +365,14 @@ Série de tâches de Valisoa (T-01 à T-08)
 │      │ des flashcards       │                  │ (PR #11)         │
 └──────┴──────────────────────┴──────────────────┴──────────────────┘
 
-Tâches restantes de Valisoa (seul, J-2 avant la présentation)
+Tâches terminées par Valisoa seul (14 septembre)
 
-T-09 Écran Study (révision)                  → feature/study-ui
-T-13 à T-17 Spaced Repetition (repris)      → feature/spaced-repetition
-T-10 Import / Export JSON                   → feature/json-import-export
-T-11 Intégration complète                   → feature/integration
-T-12 README final + démo                    → feature/documentation
-T-24 Démo / présentation (16 septembre)
+✅ T-09 Écran Study (révision)                 → feature/study-ui
+✅ T-13 à T-17 Spaced Repetition (repris)      → feature/spaced-repetition
+✅ T-10 Import / Export JSON                   → feature/json-import-export
+✅ T-11 Intégration complète                   → feature/integration
+✅ T-12 README final + démo                    → feature/documentation
+⬜ T-24 Démo / présentation (16 septembre)
 
 ════════════════════════════════════════════════════════════════════
 
@@ -573,52 +573,55 @@ Légende des statuts :
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
 │ T-08 │ Écran Deck + flashcards  │ UI            │ Valisoa       │ Terminé      │ PR #11               │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-09 │ Écran Study              │ UI            │ Valisoa       │ À faire      │ —                    │
+│ T-09 │ Écran Study              │ UI            │ Valisoa       │ Terminé      │ PR #12               │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-10 │ Import/Export JSON       │ JSON          │ Valisoa       │ À faire      │ —                    │
+│ T-10 │ Import/Export JSON       │ JSON          │ Valisoa       │ Terminé      │ PR #13               │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-11 │ Intégration complète     │ Integration   │ Valisoa       │ À faire      │ —                    │
+│ T-11 │ Intégration complète     │ Integration   │ Valisoa       │ Terminé      │ feature/integration  │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-12 │ README final + démo      │ Documentation │ Valisoa       │ À faire      │ —                    │
+│ T-12 │ README final + démo      │ Documentation │ Valisoa       │ Terminé      │ feature/documentation│
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-13 │ Règles Spaced Repetition │ Spaced        │ Valisoa       │ À faire      │ —                    │
-│      │                          │ Repetition    │ (repris)      │              │                      │
+│ T-13 │ Règles Spaced Repetition │ Spaced        │ Valisoa       │ Terminé      │ feature/spaced-      │
+│      │                          │ Repetition    │ (repris)      │              │ repetition           │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-14 │ Service Spaced           │ Spaced        │ Valisoa       │ À faire      │ —                    │
-│      │ Repetition               │ Repetition    │ (repris)      │              │                      │
+│ T-14 │ Service Spaced           │ Spaced        │ Valisoa       │ Terminé      │ feature/spaced-      │
+│      │ Repetition               │ Repetition    │ (repris)      │              │ repetition           │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-15 │ Calcul des intervalles   │ Spaced        │ Valisoa       │ À faire      │ —                    │
-│      │                          │ Repetition    │ (repris)      │              │                      │
+│ T-15 │ Calcul des intervalles   │ Spaced        │ Valisoa       │ Terminé      │ feature/spaced-      │
+│      │                          │ Repetition    │ (repris)      │              │ repetition           │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-16 │ Calcul nextReview        │ Spaced        │ Valisoa       │ À faire      │ —                    │
-│      │                          │ Repetition    │ (repris)      │              │                      │
+│ T-16 │ Calcul nextReview        │ Spaced        │ Valisoa       │ Terminé      │ feature/spaced-      │
+│      │                          │ Repetition    │ (repris)      │              │ repetition           │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
-│ T-17 │ Tests unitaires SR       │ Tests         │ Valisoa       │ À faire      │ —                    │
-│      │                          │               │ (repris)      │              │                      │
+│ T-17 │ Tests unitaires SR       │ Tests         │ Valisoa       │ Terminé      │ feature/spaced-      │
+│      │                          │               │ (repris)      │              │ repetition           │
 ├──────┼──────────────────────────┼───────────────┼───────────────┼──────────────┼──────────────────────┤
 │ T-24 │ Démo / présentation      │ Demo          │ Valisoa       │ À faire      │ —                    │
 └──────┴──────────────────────────┴───────────────┴───────────────┴──────────────┴──────────────────────┘
 
 Plan des 2 jours restants (14 → 16 septembre)
 
-Dimanche 14 septembre :
-- Spaced Repetition (T-13 à T-17) : règles SM-2, service Dart pur, tests.
-- Écran Study (T-09) : session de révision reliée au service SR.
+Dimanche 14 septembre : ✅ fait
+- Spaced Repetition (T-13 à T-17) : règles SM-2, service Dart pur, 11 tests.
+- Écran Study (T-09) : session de révision reliée au service SR + tests.
+- Import / Export JSON (T-10) + tests.
+- Intégration (T-11) : test de parcours complet, 34 tests au total verts.
 
 Lundi 15 septembre :
-- Import / Export JSON (T-10).
-- Intégration complète (T-11) + tests passants (T-B4, T-B5).
-- README final (T-12).
+- Dernière revue : `flutter test` + `flutter analyze` sur develop.
+- README final (T-12, fait sur feature/documentation) → PR.
+- Scénario de démonstration + captures/GIFs (T-24).
 
 Mardi 16 septembre (J-0) :
 - Démo / présentation (T-24), revue finale avec le mentor.
 
 Note importante sur l'état du Spaced Repetition
 
-Au moment de cette mise à jour (14 septembre), aucune branche
-feature/spaced-repetition ni aucun commit n'a été poussé sur GitHub pour
-les tâches T-13 à T-17. Achille étant parti, ces tâches sont reprises
-par Valisoa et notées « À faire » dans ce document.
+Au moment de la mise à jour du 14 septembre, aucune branche
+feature/spaced-repetition ni aucun commit n'avait été poussé sur GitHub
+pour les tâches T-13 à T-17. Depuis, elles ont été reprises et terminées
+par Valisoa ce jour même (service SM-2 + 11 tests unitaires, mergé dans
+develop).
 
 10. Règles de Pull Request
 
@@ -776,21 +779,20 @@ Database locale (Hive)     ✅
 Repositories               ✅
 Écran Home                 ✅ Terminé
 Écran Deck                 ✅ Terminé (PR #11)
-Spaced Repetition          🔴 À faire (repris, Achille parti)
-Écran Study                ⏳
-Import/Export JSON         ⏳
-Tests                      ⏳
-Documentation              ⏳
-Démo                       ⏳
+Spaced Repetition          ✅ Terminé (repris par Valisoa, 11 tests)
+Écran Study                ✅ Terminé
+Import/Export JSON         ✅ Terminé
+Intégration                ✅ Terminé (34 tests verts)
+Tests                      ✅ 34 tests passants + analyse propre
+Documentation              ✅ README final (feature/documentation)
+Démo                       ⏳ 16 septembre
 
 Prochaine étape recommandée :
 
-Spaced Repetition (T-13 → T-17)
+Merge feature/documentation (T-12) dans develop
      ↓
-Écran Study (T-09)
+Vérification finale : flutter test + flutter analyze
      ↓
-Import/Export JSON (T-10)
+Scénario de démo + captures (T-24)
      ↓
-Intégration complète (T-11) + tests
-     ↓
-README + démo (T-12, T-24)
+Présentation du 16 septembre
