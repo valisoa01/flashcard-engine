@@ -4,6 +4,7 @@ import '../models/deck.dart';
 import '../models/flashcard.dart';
 import '../repositories/deck_repository.dart';
 import '../repositories/flashcard_repository.dart';
+import '../services/firestore_sync_service.dart';
 import '../services/json_service.dart';
 import 'deck_screen.dart';
 
@@ -99,12 +100,29 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _openSyncDialog() async {
+    await showDialog<void>(
+      context: context,
+      builder: (context) => FirestoreSyncDialog(
+        service: FirestoreSyncService(
+          deckRepository: _repository,
+          flashcardRepository: _flashcardRepository,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mes decks'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.cloud_sync_outlined),
+            tooltip: 'Synchronisation Firestore',
+            onPressed: _openSyncDialog,
+          ),
           IconButton(
             icon: const Icon(Icons.upload_file_outlined),
             tooltip: 'Importer JSON',
@@ -370,6 +388,109 @@ class _JsonImportDialogState extends State<JsonImportDialog> {
         FilledButton(
           onPressed: _submit,
           child: const Text('Importer'),
+        ),
+      ],
+    );
+  }
+}
+
+class FirestoreSyncDialog extends StatefulWidget {
+  const FirestoreSyncDialog({super.key, required this.service});
+
+  final FirestoreSyncService service;
+
+  @override
+  State<FirestoreSyncDialog> createState() => _FirestoreSyncDialogState();
+}
+
+class _FirestoreSyncDialogState extends State<FirestoreSyncDialog> {
+  bool? _available;
+  bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAvailability();
+  }
+
+  Future<void> _checkAvailability() async {
+    final available = await widget.service.isAvailable;
+    if (!mounted) return;
+    setState(() {
+      _available = available;
+    });
+  }
+
+  Future<void> _run(Future<SyncResult> Function() action) async {
+    if (_busy) return;
+    setState(() {
+      _busy = true;
+    });
+    try {
+      final result = await action();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.toString())),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur : $e')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Synchronisation Firestore'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_available == null)
+            const Center(child: CircularProgressIndicator())
+          else if (!_available!)
+            const Text(
+              'Firebase n\u{2019}est pas configuré sur cet appareil. '
+              'La synchronisation est désactivée.',
+            )
+          else ...[
+            const Text(
+              'Poussez vos données vers Firestore ou récupérez celles '
+              'qui y sont stockées.',
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FilledButton.tonalIcon(
+                  onPressed:
+                      _busy ? null : () => _run(widget.service.pushAll),
+                  icon: const Icon(Icons.cloud_upload_outlined),
+                  label: const Text('Pousser'),
+                ),
+                FilledButton.tonalIcon(
+                  onPressed:
+                      _busy ? null : () => _run(widget.service.pullAll),
+                  icon: const Icon(Icons.cloud_download_outlined),
+                  label: const Text('Récupérer'),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Fermer'),
         ),
       ],
     );
