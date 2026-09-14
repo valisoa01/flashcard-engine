@@ -29,8 +29,8 @@ void main() {
   testWidgets('Home screen shows empty state', (WidgetTester tester) async {
     await pumpApp(tester);
 
-    expect(find.text('Mes decks'), findsOneWidget);
-    expect(find.text('Aucun deck. Créez-en un !'), findsOneWidget);
+    expect(find.text('FlashCard Engine'), findsOneWidget);
+    expect(find.text('Aucun deck pour le moment'), findsOneWidget);
   });
 
   testWidgets('Home screen lists decks', (WidgetTester tester) async {
@@ -54,8 +54,8 @@ void main() {
   testWidgets('Creates a deck via dialog', (WidgetTester tester) async {
     await pumpApp(tester);
 
-    expect(find.byIcon(Icons.add), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.add));
+    expect(find.byIcon(Icons.add), findsNWidgets(2));
+    await tester.tap(find.text('Nouveau deck'));
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextFormField).at(0), 'Anglais');

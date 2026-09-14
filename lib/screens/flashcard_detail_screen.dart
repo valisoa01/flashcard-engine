@@ -33,8 +33,7 @@ class _FlashcardDetailScreenState extends State<FlashcardDetailScreen> {
               Expanded(
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (child, animation) =>
-                      RotationTransition(
+                  transitionBuilder: (child, animation) => RotationTransition(
                     turns: Tween<double>(begin: 0.5, end: 1.0)
                         .animate(animation),
                     child: child,
@@ -44,13 +43,13 @@ class _FlashcardDetailScreenState extends State<FlashcardDetailScreen> {
                           key: const ValueKey('answer'),
                           label: 'Réponse',
                           text: widget.card.answer,
-                          color: Colors.green,
+                          color: const Color(0xFF06D6A0),
                         )
                       : _CardFace(
                           key: const ValueKey('question'),
                           label: 'Question',
                           text: widget.card.question,
-                          color: Colors.deepPurple,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                 ),
               ),
@@ -85,29 +84,49 @@ class _CardFace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Center(
-      child: Card(
-        color: color.withValues(alpha: 0.1),
-        elevation: 4,
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 260),
-          width: double.infinity,
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                label,
-                style: theme.textTheme.labelLarge?.copyWith(color: color),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                text,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleLarge,
-              ),
+    return Card(
+      elevation: 0,
+      clipBehavior: Clip.antiAlias,
+      child: Container(
+        width: double.infinity,
+        constraints: const BoxConstraints(minHeight: 260),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              color.withValues(alpha: 0.16),
+              color.withValues(alpha: 0.09),
             ],
           ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1,
+                  color: color,
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              text,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleLarge,
+            ),
+          ],
         ),
       ),
     );

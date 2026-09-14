@@ -33,7 +33,7 @@ void main() {
       (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.byIcon(Icons.add));
+    await tester.tap(find.text('Nouveau deck'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextFormField).at(0), 'Anglais');
     await tester.enterText(find.byType(TextFormField).at(1), 'Verbes');
