@@ -21,6 +21,8 @@ Période : 2 septembre --- 16 septembre 2026.
   et des cartes).
 - **Import / Export JSON** : exporte toutes les données dans un fichier
   JSON et permet de les réimporter.
+- **Synchronisation Firestore (bonus)** : pousse les données locales vers
+  Cloud Firestore ou les récupère (icône nuage sur l'écran d'accueil).
 
 ## Architecture
 
@@ -73,6 +75,21 @@ parcours d'intégration complet).
 4. Afficher la réponse, puis noter la carte (Encore / Difficile / Bien /
    Facile).
 5. Exporter / réimporter les données via les boutons JSON de l'accueil.
+
+## Synchronisation Firestore (bonus)
+
+La synchronisation est **optionnelle** et désactivée si Firebase n'est pas
+configuré (l'application fonctionne alors normalement en local).
+
+Pour l'activer :
+
+1. Créer un projet sur la console Firebase.
+2. Ajouter l'application correspondante (Android, iOS, Web...).
+3. Placer `google-services.json` dans `android/app/` (et les fichiers
+   équivalents selon la plateforme).
+4. Définir les règles de Firestore en mode test pour la démonstration.
+5. Relancer l'application : l'icône **nuage** de l'écran d'accueil permet
+   alors de **Pousser** les données vers Firestore ou de les **Récupérer**.
 
 ## Configuration Git
 
