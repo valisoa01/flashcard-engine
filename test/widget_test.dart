@@ -66,4 +66,31 @@ void main() {
     expect(find.text('Anglais'), findsOneWidget);
     expect(find.text('Verbes'), findsOneWidget);
   });
+
+  testWidgets('Edits a deck via the tile edit button', (WidgetTester tester) async {
+    final now = DateTime(2026, 1, 1);
+    await repository.save(
+      Deck(
+        id: 'd1',
+        title: 'Anglais',
+        description: 'Verbes',
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+
+    await pumpApp(tester);
+    expect(find.text('Anglais'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Modifier'));
+    await tester.pumpAndSettle();
+    expect(find.text('Modifier le deck'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextFormField).at(0), 'Espagnol');
+    await tester.tap(find.text('Enregistrer'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Espagnol'), findsOneWidget);
+    expect(find.text('Anglais'), findsNothing);
+  });
 }

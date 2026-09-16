@@ -7,6 +7,7 @@ import '../repositories/flashcard_repository.dart';
 import '../services/firestore_sync_service.dart';
 import '../services/json_service.dart';
 import 'deck_screen.dart';
+import 'package:flutter/services.dart';
 const List<List<Color>> _deckPalette = [
   [Color(0xFF6C63FF), Color(0xFF9D8CFF)],
   [Color(0xFF0EA5E9), Color(0xFF67D3F7)],
@@ -97,6 +98,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _editDeck(Deck deck) async {
+    final result = await showDialog<Deck>(
+      context: context,
+      builder: (context) => _DeckDialog(deck: deck),
+    );
+    if (result != null) {
+      await _repository.save(result);
+      _refresh();
+    }
+  }
+
   Future<void> _confirmDeleteDeck(Deck deck) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -123,6 +135,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
     if (confirmed == true) {
+      final cards = await _flashcardRepository.getAll(deckId: deck.id);
+      for (final card in cards) {
+        await _flashcardRepository.delete(card.id);
+      }
       await _repository.delete(deck.id);
       _refresh();
     }
@@ -257,6 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     cards.where((c) => c.isDue).length,
                                 flashcardRepository:
                                     widget.flashcardRepository,
+                                onEdit: () => _editDeck(deck),
                                 onDelete: () => _confirmDeleteDeck(deck),
                                 onChanged: _refresh,
                               );
@@ -527,6 +544,7 @@ class _DeckTile extends StatelessWidget {
     required this.cardCount,
     required this.dueCount,
     required this.flashcardRepository,
+    required this.onEdit,
     required this.onDelete,
     required this.onChanged,
   });
@@ -535,6 +553,7 @@ class _DeckTile extends StatelessWidget {
   final int cardCount;
   final int dueCount;
   final FlashcardRepository flashcardRepository;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onChanged;
 
@@ -589,13 +608,25 @@ class _DeckTile extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    right: 2,
-                    top: 2,
-                    child: IconButton(
-                      icon: const Icon(Icons.delete_outline, size: 20),
-                      color: Colors.white,
-                      tooltip: 'Supprimer',
-                      onPressed: onDelete,
+                    right: 0,
+                    top: 0,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit_outlined, size: 20),
+                          color: Colors.white,
+                          tooltip: 'Modifier',
+                          visualDensity: VisualDensity.compact,
+                          onPressed: onEdit,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline, size: 20),
+                          color: Colors.white,
+                          tooltip: 'Supprimer',
+                          visualDensity: VisualDensity.compact,
+                          onPressed: onDelete,
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -696,7 +727,9 @@ class _CountChip extends StatelessWidget {
 }
 
 class _DeckDialog extends StatefulWidget {
-  const _DeckDialog();
+  const _DeckDialog({this.deck});
+
+  final Deck? deck;
 
   @override
   State<_DeckDialog> createState() => _DeckDialogState();
@@ -704,8 +737,12 @@ class _DeckDialog extends StatefulWidget {
 
 class _DeckDialogState extends State<_DeckDialog> {
   final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  late final TextEditingController _titleController =
+      TextEditingController(text: widget.deck?.title);
+  late final TextEditingController _descriptionController =
+      TextEditingController(text: widget.deck?.description);
+
+  bool get _isEditing => widget.deck != null;
 
   @override
   void dispose() {
@@ -717,20 +754,25 @@ class _DeckDialogState extends State<_DeckDialog> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     final now = DateTime.now();
-    final deck = Deck(
-      id: now.microsecondsSinceEpoch.toString(),
-      title: _titleController.text.trim(),
-      description: _descriptionController.text.trim(),
-      createdAt: now,
-      updatedAt: now,
-    );
+    final deck = widget.deck?.copyWith(
+          title: _titleController.text.trim(),
+          description: _descriptionController.text.trim(),
+          updatedAt: now,
+        ) ??
+        Deck(
+          id: now.microsecondsSinceEpoch.toString(),
+          title: _titleController.text.trim(),
+          description: _descriptionController.text.trim(),
+          createdAt: now,
+          updatedAt: now,
+        );
     Navigator.of(context).pop(deck);
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Nouveau deck'),
+      title: Text(_isEditing ? 'Modifier le deck' : 'Nouveau deck'),
       content: Form(
         key: _formKey,
         child: Column(
@@ -756,21 +798,43 @@ class _DeckDialogState extends State<_DeckDialog> {
         ),
         FilledButton(
           onPressed: _submit,
-          child: const Text('Créer'),
+          child: Text(_isEditing ? 'Enregistrer' : 'Créer'),
         ),
       ],
     );
   }
 }
 
-class JsonExportDialog extends StatelessWidget {
+class JsonExportDialog extends StatefulWidget {
   const JsonExportDialog({super.key, required this.json});
 
   final String json;
 
   @override
+  State<JsonExportDialog> createState() => _JsonExportDialogState();
+}
+
+class _JsonExportDialogState extends State<JsonExportDialog> {
+  late final TextEditingController _textController =
+      TextEditingController(text: widget.json);
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _copyToClipboard() async {
+    await Clipboard.setData(ClipboardData(text: widget.json));
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('JSON copié dans le presse-papiers.')),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final textController = TextEditingController(text: json);
     return AlertDialog(
       title: const Text('Export JSON'),
       content: Column(
@@ -782,7 +846,7 @@ class JsonExportDialog extends StatelessWidget {
             height: 300,
             width: double.maxFinite,
             child: TextField(
-              controller: textController,
+              controller: _textController,
               maxLines: null,
               expands: true,
               readOnly: true,
@@ -801,12 +865,8 @@ class JsonExportDialog extends StatelessWidget {
           child: const Text('Fermer'),
         ),
         FilledButton(
-          onPressed: () {
-            // On mobile/desktop the copy won't automatically work,
-            // but the text is fully selectable.
-            Navigator.of(context).pop();
-          },
-          child: const Text('OK'),
+          onPressed: _copyToClipboard,
+          child: const Text('Copier'),
         ),
       ],
     );
